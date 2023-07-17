@@ -17,7 +17,7 @@ setup(
     author=u"Tuan Bach Van",
     author_email="tuan@kajala.com",
     packages=find_packages(exclude=["project", "venv"]),
-    package_data={'app_ordering.templates': ['*', '*/*', '*/*/*']},
+    package_data={'app_ordering.templates.admin': ['*', '*/*', '*/*/*']},
     include_package_data=True,
     url="https://github.com/kajalagroup/django-admin-app-ordering",
     license="MIT licence, see LICENCE.txt",

@@ -10,8 +10,8 @@ class Profile(models.Model):
     )
     name = models.CharField(_("name"), max_length=200, unique=True)
     is_default = models.BooleanField(_("is default"), default=False)
-    users = models.ManyToManyField(User, verbose_name=_("users"), blank=True)
-    groups = models.ManyToManyField(Group, verbose_name=_("groups"), blank=True)
+    users = models.ManyToManyField(User, verbose_name=_("users"), related_name="app_ordering_profile", blank=True)
+    groups = models.ManyToManyField(Group, verbose_name=_("groups"), related_name="app_ordering_profile", blank=True)
 
     class Meta:
         verbose_name = _("profile")

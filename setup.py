@@ -12,15 +12,15 @@ def parse_requirements(filename, session=False):
 install_requires = parse_requirements("requirements.txt", session=False)
 
 setup(
-    name="kcommunication",
-    version="1.1.6",
+    name="app_ordering",
+    version="1.0.0",
     author=u"Tuan Bach Van",
     author_email="tuan@kajala.com",
     packages=find_packages(exclude=["project", "venv"]),
     include_package_data=True,
-    url="https://github.com/kajalagroup/communication",
+    url="https://github.com/kajalagroup/django-admin-app-ordering",
     license="MIT licence, see LICENCE.txt",
-    description="Communication helpers and background task management for Huey queue.",
+    description="Sorting and toggle visible for Django admin apps",
     long_description=open("README.md").read(),
     zip_safe=False,
     install_requires=install_requires,

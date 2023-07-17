@@ -1,0 +1,3 @@
+include *.html
+recursive-include  *.txt *.py *.html
+

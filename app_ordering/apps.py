@@ -17,26 +17,26 @@ class AppOrdersConfig(AppConfig):
             from django.contrib.auth.models import User
 
             user = request.user
-            assert isinstance(user, User)
-            print(user)
-
+            selected_profile = None
             app_dict = self._build_app_dict(request, app_label)
 
-            user_groups = user.groups.all()
+            if isinstance(user, User):
 
-            if len(user_groups) > 0:
-                selected_profile_qs = Profile.objects.filter(Q(groups__in=user_groups) | Q(users__in=[user]))
-            else:
-                selected_profile_qs = Profile.objects.filter(users__in=[user])
+                user_groups = user.groups.all()
 
-            selected_profile = selected_profile_qs.prefetch_related("admin_apps__admin_models").first()
-            print("selected_profile", selected_profile)
-            if not selected_profile:  # Pick by default profile
-                selected_profile = (
-                    Profile.objects.filter(is_default=True)
-                    .prefetch_related("admin_apps__admin_models")
-                    .first()
-                )
+                if len(user_groups) > 0:
+                    selected_profile_qs = Profile.objects.filter(Q(groups__in=user_groups) | Q(users__in=[user]))
+                else:
+                    selected_profile_qs = Profile.objects.filter(users__in=[user])
+
+                selected_profile = selected_profile_qs.prefetch_related("admin_apps__admin_models").first()
+                print("selected_profile", selected_profile)
+                if not selected_profile:  # Pick by default profile
+                    selected_profile = (
+                        Profile.objects.filter(is_default=True)
+                        .prefetch_related("admin_apps__admin_models")
+                        .first()
+                    )
             if not selected_profile:
                 # Sort the apps alphabetically.
                 app_list = sorted(app_dict.values(), key=lambda x: x["name"].lower())

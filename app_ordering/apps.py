@@ -59,11 +59,20 @@ class AppOrdersConfig(AppConfig):
                     "visible": admin_app.visible or admin_app.app_label == APP_NAME,  # Ignore itself
                     "modules": {},
                 }
+
+                all_module_invisible = True
                 for admin_model in admin_app.admin_models.all():
+
+                    module_visible = admin_model.visible or admin_app.app_label == APP_NAME
+                    if module_visible and all_module_invisible:
+                        all_module_invisible = False
+
                     m_app_orders[admin_app.app_label]["modules"][admin_model.object_name] = {
                         "order": admin_model.order,
-                        "visible": admin_model.visible or admin_app.app_label == APP_NAME,  # Ignore itself
+                        "visible": module_visible,  # Ignore itself
                     }
+                if all_module_invisible:
+                    m_app_orders[admin_app.app_label]['visible'] = False
 
             app_list = sorted(
                 app_dict.values(),

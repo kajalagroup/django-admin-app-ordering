@@ -1,25 +1,43 @@
 from django.apps import AppConfig
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Q
+
+APP_NAME = "app_ordering"
 
 
 class AppOrdersConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "app_ordering"
+    name = APP_NAME
     verbose_name = _("app ordering")
 
     def ready(self):
         def get_app_list(self, request, app_label=None):
             from app_ordering.models import Profile, AdminApp
+            from django.contrib.auth.models import User
+
+            user = request.user
+            assert isinstance(user, User)
+            print(user)
 
             app_dict = self._build_app_dict(request, app_label)
 
-            default_p = (
-                Profile.objects.filter(is_default=True)
-                .prefetch_related("admin_apps__admin_models")
-                .first()
-            )
-            if not default_p:
+            user_groups = user.groups.all()
+
+            if len(user_groups) > 0:
+                selected_profile_qs = Profile.objects.filter(Q(groups__in=user_groups) | Q(users__in=[user]))
+            else:
+                selected_profile_qs = Profile.objects.filter(users__in=[user])
+
+            selected_profile = selected_profile_qs.prefetch_related("admin_apps__admin_models").first()
+            print("selected_profile", selected_profile)
+            if not selected_profile:  # Pick by default profile
+                selected_profile = (
+                    Profile.objects.filter(is_default=True)
+                    .prefetch_related("admin_apps__admin_models")
+                    .first()
+                )
+            if not selected_profile:
                 # Sort the apps alphabetically.
                 app_list = sorted(app_dict.values(), key=lambda x: x["name"].lower())
 
@@ -31,17 +49,17 @@ class AppOrdersConfig(AppConfig):
 
             m_app_orders = {}
 
-            for admin_app in default_p.admin_apps.all():
+            for admin_app in selected_profile.admin_apps.all():
                 assert isinstance(admin_app, AdminApp)
                 m_app_orders[admin_app.app_label] = {
                     "order": admin_app.order,
-                    "visible": admin_app.visible,
+                    "visible": admin_app.visible or admin_app.app_label == APP_NAME,  # Ignore itself
                     "modules": {},
                 }
                 for admin_model in admin_app.admin_models.all():
                     m_app_orders[admin_app.app_label]["modules"][admin_model.object_name] = {
                         "order": admin_model.order,
-                        "visible": admin_model.visible,
+                        "visible": admin_model.visible or admin_app.app_label == APP_NAME,  # Ignore itself 
                     }
 
             app_list = sorted(

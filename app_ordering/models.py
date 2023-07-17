@@ -38,6 +38,7 @@ class AdminApp(models.Model):
     visible = models.BooleanField(_("visible"), default=True)
 
     class Meta:
+        ordering = ['order']
         verbose_name = _("admin app")
         verbose_name_plural = _("admin apps")
 
@@ -61,6 +62,10 @@ class AdminModel(models.Model):
     admin_app = models.ForeignKey(AdminApp, verbose_name=_("admin app"), related_name='admin_models', on_delete=models.CASCADE, )
     visible = models.BooleanField(_("visible"), default=True)
 
+    class Meta:
+        ordering = ['order']
+        verbose_name = _("admin model")
+        verbose_name_plural = _("admin models")
+
     def __str__(self):
         return str(self.object_name)
-

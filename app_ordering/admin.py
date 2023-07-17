@@ -4,11 +4,13 @@ from django.utils.safestring import mark_safe
 from django.urls import reverse
 from app_ordering.services import sync_apps
 from django.contrib.messages import add_message, SUCCESS
+from adminsortable2.admin import SortableTabularInline
+from adminsortable2.admin import SortableAdminBase
 
 from app_ordering.models import Profile, AdminApp, AdminModel
 
 
-class AdminAppInlineAdmin(admin.TabularInline):
+class AdminAppInlineAdmin(SortableTabularInline):
     model = AdminApp
     readonly_fields = (
         "edit_link",
@@ -27,13 +29,13 @@ class AdminAppInlineAdmin(admin.TabularInline):
             return ""
 
 
-class AdminModelInlineAdmin(admin.TabularInline):
+class AdminModelInlineAdmin(SortableTabularInline):
     model = AdminModel
     extra = 0
-    ordering = ("order",)
+    readonly_fields = ('object_name', )
 
 
-class ProfileAdmin(admin.ModelAdmin):
+class ProfileAdmin(SortableAdminBase, admin.ModelAdmin):
     list_display = ["created", "name", "is_default"]
     inlines = [
         AdminAppInlineAdmin,
@@ -48,7 +50,7 @@ class ProfileAdmin(admin.ModelAdmin):
         return super().changelist_view(request, extra_context)
 
 
-class AdminAppAdmin(admin.ModelAdmin):
+class AdminAppAdmin(SortableAdminBase, admin.ModelAdmin):
     list_display = [
         "created",
         "app_label",

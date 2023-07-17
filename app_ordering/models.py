@@ -3,6 +3,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User, Group
 
+
 class Profile(models.Model):
     created = models.DateTimeField(
         _("created"), default=now, blank=True, db_index=True, editable=False
@@ -33,7 +34,7 @@ class AdminApp(models.Model):
         _("created"), default=now, blank=True, db_index=True, editable=False
     )
     app_label = models.CharField(_("app label"), max_length=200)
-    order = models.IntegerField(_("order"), default=1, db_index=True)
+    order = models.PositiveIntegerField(_("order"), default=1, db_index=True)
     profile = models.ForeignKey(Profile, verbose_name=_("profile"), related_name="admin_apps", on_delete=models.CASCADE, )
     visible = models.BooleanField(_("visible"), default=True)
 
@@ -53,12 +54,13 @@ class AdminApp(models.Model):
         assert isinstance(max_admin_model, AdminModel)
         return max_admin_model.order + 1
 
+
 class AdminModel(models.Model):
     created = models.DateTimeField(
         _("created"), default=now, blank=True, db_index=True, editable=False
     )
     object_name = models.CharField(_("object name"), max_length=200)
-    order = models.IntegerField(_("order"), default=1)
+    order = models.PositiveIntegerField(_("order"), default=1)
     admin_app = models.ForeignKey(AdminApp, verbose_name=_("admin app"), related_name='admin_models', on_delete=models.CASCADE, )
     visible = models.BooleanField(_("visible"), default=True)
 

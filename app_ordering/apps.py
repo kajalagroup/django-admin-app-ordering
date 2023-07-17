@@ -44,6 +44,9 @@ class AppOrdersConfig(AppConfig):
                 # Sort the models alphabetically within each app.
                 for app in app_list:
                     app["models"].sort(key=lambda x: x["name"])
+                    app["visible"] = True    
+                    for model in app["models"]:
+                        model["visible"] = True
 
                 return app_list
 
@@ -59,7 +62,7 @@ class AppOrdersConfig(AppConfig):
                 for admin_model in admin_app.admin_models.all():
                     m_app_orders[admin_app.app_label]["modules"][admin_model.object_name] = {
                         "order": admin_model.order,
-                        "visible": admin_model.visible or admin_app.app_label == APP_NAME,  # Ignore itself 
+                        "visible": admin_model.visible or admin_app.app_label == APP_NAME,  # Ignore itself
                     }
 
             app_list = sorted(
@@ -88,8 +91,7 @@ class AppOrdersConfig(AppConfig):
                     )
                 )
                 for model in app["models"]:
-                    model["visible"] = True
-                    # model['visible'] = True if model["object_name"] not in app_modules else app_modules[model["object_name"]]['visible']
+                    model['visible'] = True if model["object_name"] not in app_modules else app_modules[model["object_name"]]['visible']
 
             return app_list
 

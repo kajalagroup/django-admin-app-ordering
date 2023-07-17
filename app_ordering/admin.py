@@ -37,6 +37,7 @@ class AdminModelInlineAdmin(SortableTabularInline):
 
 class ProfileAdmin(SortableAdminBase, admin.ModelAdmin):
     list_display = ["created", "name", "is_default"]
+    autocomplete_fields = ('users', 'groups')
     inlines = [
         AdminAppInlineAdmin,
     ]

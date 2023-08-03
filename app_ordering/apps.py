@@ -30,7 +30,6 @@ class AppOrdersConfig(AppConfig):
                     selected_profile_qs = Profile.objects.filter(users__in=[user])
 
                 selected_profile = selected_profile_qs.prefetch_related("admin_apps__admin_models").first()
-                print("selected_profile", selected_profile)
                 if not selected_profile:  # Pick by default profile
                     selected_profile = (
                         Profile.objects.filter(is_default=True)
@@ -38,13 +37,12 @@ class AppOrdersConfig(AppConfig):
                         .first()
                     )
             if not selected_profile:
-                # Sort the apps alphabetically.
-                app_list = sorted(app_dict.values(), key=lambda x: x["name"].lower())
+                app_list = sorted(app_dict.values(), key=lambda x: x["name"].lower())  # Sort the apps alphabetically.
 
                 # Sort the models alphabetically within each app.
                 for app in app_list:
                     app["models"].sort(key=lambda x: x["name"])
-                    app["visible"] = True    
+                    app["visible"] = True
                     for model in app["models"]:
                         model["visible"] = True
 
@@ -105,4 +103,5 @@ class AppOrdersConfig(AppConfig):
             return app_list
 
         admin.AdminSite.get_app_list = get_app_list
+
         from . import signals as signals_init  # noqa

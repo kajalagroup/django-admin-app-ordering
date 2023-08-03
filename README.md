@@ -7,6 +7,8 @@ Summary this are features:
 - Toggle admin app, models.
 - Configure sorting/visibility app(model) for certain users or groups.
 
+![screenshot](https://raw.githubusercontent.com/kajalagroup/django-admin-app-ordering/develop/screenshot.png)
+
 
 ## Install
 

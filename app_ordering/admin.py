@@ -1,4 +1,6 @@
+from typing import Optional, Any
 from django.contrib import admin
+from django.http.request import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from django.utils.safestring import mark_safe
 from django.urls import reverse
@@ -18,6 +20,12 @@ class AdminAppInlineAdmin(SortableTabularInline):
     )
     extra = 0
 
+    def has_add_permission(self, request: HttpRequest, obj) -> bool:
+        return False
+
+    def has_delete_permission(self, request: HttpRequest, obj: Any | None = ...) -> bool:
+        return False
+
     def edit_link(self, instance):
         url = reverse(
             "admin:%s_%s_change" % (instance._meta.app_label, instance._meta.model_name),
@@ -33,6 +41,12 @@ class AdminModelInlineAdmin(SortableTabularInline):
     model = AdminModel
     extra = 0
     readonly_fields = ('object_name', )
+
+    def has_add_permission(self, request: HttpRequest, obj) -> bool:
+        return False
+
+    def has_delete_permission(self, request: HttpRequest, obj: Any | None = ...) -> bool:
+        return False
 
 
 class ProfileAdmin(SortableAdminBase, admin.ModelAdmin):
@@ -50,6 +64,10 @@ class ProfileAdmin(SortableAdminBase, admin.ModelAdmin):
 
         return super().changelist_view(request, extra_context)
 
+    def response_add(self, request, obj, post_url_continue=None):
+        sync_apps(obj.pk)
+        return super().response_add(request, obj, post_url_continue)
+
 
 class AdminAppAdmin(SortableAdminBase, admin.ModelAdmin):
     list_display = [
@@ -59,6 +77,12 @@ class AdminAppAdmin(SortableAdminBase, admin.ModelAdmin):
     inlines = [
         AdminModelInlineAdmin,
     ]
+
+    def has_add_permission(self, request: HttpRequest) -> bool:
+        return False
+
+    def has_delete_permission(self, request: HttpRequest, obj: Any | None = ...) -> bool:
+        return False
 
 
 admin.site.register(Profile, ProfileAdmin)

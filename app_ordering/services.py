@@ -3,6 +3,7 @@ import logging
 from django.apps import apps
 from django.contrib import admin
 from app_ordering.models import Profile, AdminApp, AdminModel
+from typing import Optional
 
 
 logger = logging.getLogger(__name__)
@@ -27,7 +28,7 @@ def sync_models(admin_app: AdminApp, all_model_object_names: list):
         AdminModel.objects.filter(pk__in=inactive_admin_model_ids).delete()
 
 
-def sync_apps():
+def sync_apps(profile_id: Optional[int] = None):
     models = apps.get_models()
     map_app = {}
     for model in models:
@@ -38,8 +39,11 @@ def sync_apps():
                 map_app[app_label] = []
             if object_name not in map_app[app_label]:
                 map_app[app_label].append(object_name)
+    profile_qs = Profile.objects.prefetch_related("admin_apps__admin_models")
+    if profile_id:
+        profile_qs.filter(pk=profile_id)
 
-    for profile in Profile.objects.prefetch_related("admin_apps__admin_models").all():
+    for profile in profile_qs.all():
         active_app_labels = []
         inactive_app_ids = []
         for admin_app in profile.admin_apps.all():

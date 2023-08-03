@@ -1,10 +1,10 @@
 # Django admin app ordering
 
-**Django admin app ordering** is a Django app to able order module app in your Django app, it also support to toggle app or model.
+**Django admin app ordering** is a Django app to able ordering apps and models in the Django admin site, it also support to toggle visiblity app or model.
 
 Summary this are features:
 - Sorting admin app, models.
-- Toggle admin app, models.
+- Toggle visibility admin app, models.
 - Configure sorting/visibility app(model) for certain users or groups.
 
 ![screenshot](https://raw.githubusercontent.com/kajalagroup/django-admin-app-ordering/develop/screenshot.png)
@@ -50,3 +50,8 @@ TEMPLATES = [
 
 ## Profile:
 - Default profile will be used as default if you don't set any specific profile for logged in user.
+
+
+## Extend template:
+
+If you want to custom app_list.html, better you should take a look at *app_ordering/templates/admin/app_list.html* and custom based on that

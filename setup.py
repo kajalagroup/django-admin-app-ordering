@@ -23,6 +23,7 @@ setup(
     license="MIT licence, see LICENCE.txt",
     description="Sorting and toggle visible for Django admin apps",
     long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
     zip_safe=False,
     install_requires=install_requires,
 )

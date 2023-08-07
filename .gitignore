@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 project/settings.py
 /static
+.pypirc

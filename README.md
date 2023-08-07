@@ -13,7 +13,7 @@ Summary this are features:
 ## Install
 
 ```
-pip install django-admin-app-ordering
+pip install app_ordering
 ```
 
 Add "app_ordering" and "adminsortable2" to app list:

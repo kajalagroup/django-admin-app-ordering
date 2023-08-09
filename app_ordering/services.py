@@ -31,14 +31,22 @@ def sync_models(admin_app: AdminApp, all_model_object_names: list):
 def sync_apps(profile_id: Optional[int] = None):
     models = apps.get_models()
     map_app = {}
+    all_apps = []
     for model in models:
         if model in admin.site._registry:  # pylint: disable=protected-access
             app_label = model._meta.app_label
             object_name = model._meta.object_name
             if app_label not in map_app:
                 map_app[app_label] = []
+                all_apps.append(app_label)
             if object_name not in map_app[app_label]:
                 map_app[app_label].append(object_name)
+                
+    all_apps = sorted(all_apps)
+    
+    for app_label in map_app:
+        map_app[app_label] = sorted(map_app[app_label])
+
     profile_qs = Profile.objects.prefetch_related("admin_apps__admin_models")
     if profile_id:
         profile_qs.filter(pk=profile_id)
@@ -54,7 +62,7 @@ def sync_apps(profile_id: Optional[int] = None):
                 active_app_labels.append(admin_app.app_label)
                 sync_models(admin_app, map_app[admin_app.app_label])
         next_order = profile.next_app_order
-        for app_label in map_app:
+        for app_label in all_apps:
             if app_label not in active_app_labels:
                 admin_app = AdminApp(profile=profile, app_label=app_label, order=next_order)
                 admin_app.save()

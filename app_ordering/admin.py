@@ -81,8 +81,10 @@ class AdminAppAdmin(SortableAdminBase, admin.ModelAdmin):
     def has_add_permission(self, request: HttpRequest) -> bool:
         return False
 
-    def has_delete_permission(self, request: HttpRequest, obj: Any | None = ...) -> bool:
-        return False
+    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['show_delete'] = False
+        return super().changeform_view(request, object_id, form_url, extra_context)
 
 
 admin.site.register(Profile, ProfileAdmin)

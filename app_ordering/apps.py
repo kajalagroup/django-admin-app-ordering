@@ -9,7 +9,7 @@ APP_NAME = "app_ordering"
 class AppOrdersConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = APP_NAME
-    verbose_name = _("app ordering")
+    verbose_name = _("App ordering")
 
     def ready(self):
         def get_app_list(self, request, app_label=None):

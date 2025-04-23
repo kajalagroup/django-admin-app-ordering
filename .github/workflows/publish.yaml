@@ -17,14 +17,13 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.12"]
 
     steps:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
     - name: Install Dependencies
       run: |
-        npm ci --include=dev
         python -m pip install build --user
     - name: Build 🐍 Python 📦 Package
       run: python -m build --sdist --wheel --outdir dist/

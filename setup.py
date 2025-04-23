@@ -13,7 +13,7 @@ install_requires = parse_requirements("requirements.txt", session=False)
 
 setup(
     name="app_ordering",
-    version="1.8",
+    version="1.9",
     author=u"Tuan Bach Van",
     author_email="tuan@kajala.com",
     packages=find_packages(exclude=["project", "venv"]),
